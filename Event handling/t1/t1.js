@@ -31,28 +31,19 @@ console.log(todoList);
 
 
 function createListElements(){
-  for (const i of todoList) {
-    const ul = document.getElementById("list");
-    const button = document.createElement("button");
-    button.setAttribute("type", "reset")
-    button.setAttribute("id", i.id);
-    button.innerText = 'Delete'
-    const li = document.createElement("li");
-    li.setAttribute("id", `li${i.id}`);
-    const input = document.createElement("input");
-    const label = document.createElement("label");
-    input.setAttribute("type", "checkbox");
-    input.setAttribute("id", `todo-${i.id}`);
-    if (i.completed){
-      input.checked = true;
-    };
-    label.innerHTML = i.task;
-    label.htmlFor = `todo-${i.id}`;
-    li.appendChild(input);
-    li.appendChild(label);
-    li.appendChild(button);
-    ul.appendChild(li);
-    }
+  const ul = document.getElementById("list");
+  todoList.forEach((task) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<input type="checkbox" id="todo-${task.id}">
+                      <label>${task.task}</label>
+                      <button type="reset" id="${task.id}">Delete</button>`
+      if (task.completed){
+        li.innerHTML = `<input type="checkbox" id="todo-${task.id}" checked>
+                        <label>${task.task}</label>
+                        <button type="reset" id="${task.id}">Delete</button>`
+      }
+      ul.appendChild(li);
+  });
 }
 
 function createBoxes(){
@@ -72,12 +63,12 @@ function createBoxes(){
 function createDeleteButtons(){
   const buttons = document.querySelectorAll("button[type=reset]")
   buttons.forEach(function(button) {
-    button.addEventListener('click', function(){
+    button.addEventListener('click', function(e){
       const list = document.getElementById('list');
+      list.removeChild(e.target.parentNode)
       let j = 0;
       todoList.forEach(function(i){
         if (i.id == button.id){
-          list.removeChild(document.getElementById(`li${i.id}`))
           todoList.splice(j, 1);
         }
         j++;
@@ -118,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   submitBtn.addEventListener("click", function(e) {
+    console.log(e);
     e.preventDefault();
     const data = {
       'id': todoList.length + 1,
